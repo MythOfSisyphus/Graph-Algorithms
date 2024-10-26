@@ -5,21 +5,21 @@ component corresponding/involving that node.
 Then I used DFS-like approach to solve this problem.
 Below is a simple implementation of the appraoch and easy to understand.
 """
-from queue import Queue
-def corresponding_component_to(graph, node):
+from collections import deque
+def get_components(graph, node):
     resulting_components = []
-    myqueue = Queue()
-    myqueue.put(node)
+    myqueue = deque([node])
     visited = {node}
 
     while not myqueue.empty():
-        current_node = myqueue.get()
+        current_node = myqueue.popleft()
         resulting_components.append(current_node) # store node when it is popped out from queue
 
-        for neighbor in graph.get(current_node, []):
+        neighbors = graph.get(current_node, [])
+        for neighbor in neighbors:
             if neighbor not in visited:
                 visited.add(neighbor)
-                myqueue.put(neighbor)
+                myqueue.append(neighbor)
 
     return resulting_components # all nodes in component
 
@@ -30,15 +30,18 @@ corresponding components of first element of the list which can be done using ab
 function now we remove all these nodes from the list then apply the same process for
 remaining nodes untill the list becomes empty.
 """
-def Number_of_Components(graph):
-    nodes_given = [node for node in graph] # all nodes
-    count = 0 # to keep track of number of components
-    while nodes_given:
-        current_component = corresponding_component_to(graph, node=nodes_given[0])
-        for node in current_component:
-            nodes_given.remove(node) # remove all nodes which are in current_component
-        count += 1
-    return count
+def number_of_components(graph):
+    nodes = set(graph.keys()) # set of nodes
+    component_count = 0 # to keep track of number of components
+    
+    while nodes:
+        node = next(iter(nodes)) # get arbitrary node from the set
+        component = get_components(graph, node)
+
+        nodes -= set(component) # removes all nodes which are in this component
+        component_count += 1
+
+    return component_count
 
 #--------------------------------------------------------------------------------------------
 G = {
@@ -65,9 +68,5 @@ H = {
     'L' : ['K']
 }
 
-print(corresponding_component_to(H, 'G'))
-print(Number_of_Components(H))
-
-# print(corresponding_component_to(G, 1))
-# components_in_G = Number_of_Components(G)
-# print(components_in_G)
+print(get_components(H, 'G'))
+print(number_of_components(H))
