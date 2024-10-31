@@ -1,43 +1,58 @@
 """
-Breadth-First Search Algorithm:
-Breadth-First Search (BFS) traverses the graph systematically, level by level, forming a BFS tree along the way.
+Breadth-First - Graph Traversal
+Breadth-First traverses the graph systematically, level by level, forming a BFS tree along the way.
 
-Implementation - Target Node Search
+Just by using the queue which is based on the principal of FIFO.
+And when we do it, it really gives us bfs traversal of the graph.
 """
 from queue import Queue
 
-graph = {0: {1, 3, 4}, 1: {0, 2}, 2: {0, 1, 3, 5}, 3: {0, 2, 4, 5},
-         4: {0, 3, 5}, 5: {2, 3, 4}}
+def bfs_traversal(start_node, graph):
+    visited = {start_node}
+    myqueue = Queue()
+    myqueue.put(start_node)
 
+    while not myqueue.empty():
+        current_node = myqueue.get()
+        print(current_node, end=" ")
+
+        for next_node in graph[current_node]:
+            if next_node not in visited:
+                myqueue.put(next_node)
+                visited.add(next_node)
+
+"""
+BFS Traversal can be used to find the path from start_node to target_node.
+We can't just keep adding the node in result to find the path as we did in DFS,
+it is because BDF is level-by-level traversal whereas when we traverse along DFS
+it actually forms a path while traversing. So here we have to mantain the node and
+its parent dict. And path found flag to know whether we have target_node in graph
+or not.
+"""
 def bfs(graph, start_node, target_node):
     # set of visited nodes to prevent loops
-    visited = set()
-    myqueue = Queue()
-
     # add the start_node to the myqueue and visited
+    visited = {start_node}
+    myqueue = Queue()
     myqueue.put(start_node)
-    visited.add(start_node)
 
     # start node has not parent
     # because we want to find path from start -> target
-    parent = dict()
-    parent[start_node] = None
+    parent = {start_node : None}
 
-    # path_found has its own significance
+    # path_found flag,
     path_found = False
 
     while not myqueue.empty():
         current_node = myqueue.get()
         if current_node == target_node:
             path_found = True
-            break # stopping the loop when our target node found.
-
-        for next in graph[current_node]:
-            if next not in visited:
-                myqueue.put(next)
-                parent[next] = current_node
-                visited.add(next)
-
+            break # stopping the loop when our target node is found.
+        for neighbor in graph[current_node]:
+            if neighbor not in visited:
+                myqueue.put(neighbor)
+                visited.add(neighbor)
+                parent[neighbor] = current_node
     # path construction
     path = []
     if path_found:
@@ -45,64 +60,20 @@ def bfs(graph, start_node, target_node):
         while parent[target_node] is not None:
             path.append(parent[target_node])
             target_node = parent[target_node]
-        path.reverse()
-    return path
+    return path[::-1] # reversing the path
 
-#--------------------------------------------------
+#------------------------------------------------------------------------------
+graph = {
+        0: {1, 3, 4}, 
+        1: {0, 2}, 
+        2: {0, 1, 3, 5}, 
+        3: {0, 2, 4, 5},
+        4: {0, 3, 5}, 
+        5: {2, 3, 4}
+    }
+
+bfs_traversal(0, graph)
+
 route = bfs(graph, 0, 5)
 print(route)
 
-"""
-Breadth-First Implementation - Graph Traversal
-Breadth-First Traversal is a special case of Breadth-First Search that traverses
-the whole graph, instead of searching for a target node. 
-"""
-def bfs_traversal(start_node, graph):
-    myqueue = Queue()
-    visited = set()
-
-    myqueue.put(start_node)
-    visited.add(start_node)
-
-    while not myqueue.empty():
-        current_node = myqueue.get()
-        print(current_node, end=" ")
-        for next_node in graph[current_node]:
-            if next_node not in visited:
-                myqueue.put(next_node)
-                visited.add(next_node)
-
-#----------------------------------------------------------------
-bfs_traversal(0, graph)
-# g = Graph(12)
-
-# g.addEdge(0, 1)
-# g.addEdge(0, 2)
-
-# g.addEdge(1, 3)
-# g.addEdge(1, 4)
-# g.addEdge(1, 5)
-
-# g.addEdge(2, 6)
-# g.addEdge(2, 7)
-
-# g.addEdge(4, 8)
-
-# g.addEdge(6, 9)
-# g.addEdge(6, 10)
-
-# g.addEdge(7, 11)
-
-# h = Graph(7)
-
-# h.addEdge(0, 1)
-# h.addEdge(0, 2)
-# h.addEdge(1, 3)
-# h.addEdge(1, 4)
-# h.addEdge(2, 5)
-
-# h.display()
-
-# h.addEdge(0, 7)
-
-# h.display()

@@ -1,28 +1,21 @@
 class Graph:
-    # Constructor
     def __init__(self, num_of_nodes, directed=True):
         self.num_of_nodes = num_of_nodes
         self.directed = directed
-
         # Adjacency Matrix is a way to represent a graph
-        # a zero matrix of order nodes x nodes
-        self.adjacency_matrix = [[0 for columns in range(self.num_of_nodes)] 
+        self.adj_matrix = [[0 for columns in range(self.num_of_nodes)] 
                                    for rows in range(self.num_of_nodes)]
-
     # Add edge to a graph
     def add_edge(self, node1, node2, weight = 1):
-        self.adjacency_matrix[node1][node2] = weight
+        self.adj_matrix[node1][node2] = weight
 
-        # if the graph is undirected
+        # if graph is not directed
         if not self.directed:
-            self.adjacency_matrix[node2][node1] = weight
-
-    # printing Adjacency Matrix
+            self.adj_matrix[node2][node1] = weight
+            
     def show_adj_matrix(self):
-        for row in self.adjacency_matrix:
-            for column in row:
-                print(column, end=" ")
-            print()
+        for row in self.adj_matrix:
+            print(row)
 
 
 # # initializing an empty graph with 5 nodes
